@@ -31,9 +31,46 @@ Constraints:
 # answer
 
 ## al
-- 
+- 모든 부분집합의 개수를 찾고, 두 값의 차이가 k인 짝(pair)을 찾음
+  짝이 포함된 부분집합의 개수를 모든 부분집합의 개수에서 빼고,
+  중복으로 뺀 부분을 보정해가는 방식으로 풀이를 계획함
+- pair 에서 2개를 선택한 보정 뿐만 아니라 모든 경우의 수에 대한 보정이 필요한 것으로 보임
+- 계획한 풀이 방법으로 풀 수 있는지 명확하지 않아 중단함
 
 ```python
+# Wrong Answer 1205/1308 testcases passed
+
+
+class Solution:
+    def beautifulSubsets(self, nums: List[int], k: int) -> int:
+        pair = []
+        cnt_num = len(nums)
+
+        for a, b in list(combinations(nums, 2)):
+            if abs(a - b) == k:
+                pair.append((a, b))
+
+        #print(pair)
+        # all subsets
+        cnt = 2 ** cnt_num - 1
+        #print(cnt)
+        # Remove subsets that satisfy the condition (duplicately)
+        cnt -= (2 ** (cnt_num - 2)) * len(pair)
+        #print(cnt)
+
+        # Adds duplicates removed
+        add_cnt = 0
+        for a, b in list(combinations(pair, 2)):
+            union = set(a) | set(b)
+            cnt += 2 ** (cnt_num - len(union))
+            add_cnt += 1
+
+        # Adjust the entire set to be removed only once
+        rm_cnt = len(pair)
+        if rm_cnt > 0:
+            cnt += (rm_cnt - add_cnt - 1)
+
+        return int(cnt)
 
 ```
 

@@ -34,8 +34,71 @@ Constraints:
 # answer
 
 ## al
-- 
+- shifts 에서 주어진 범위 shift 를 누적, 최종 결과를 s에 적용하여 리턴하도록 구성
+- # (1) 과 같이 적용할 index 에 동일한 방향을 더해주는 과정을 수행했을 때 시간 초과 발생
+  이 부분을 개선할 방법을 고민하였으나, 적절한 방법을 찾지 못함
+- 문제의 Hint 2 를 참고하여 start index 에 방향을 더하고, end + 1 index 에 방향을 빼는 방법 적용
+  모두 적용 후 각 index 값을 누적해서 더하면 의도한 데이터를 구성할 수 있음
+- 누적한 shift 값을 알파벳 개수로 나눈 나머지를 s의 각 index 에 적용
+  rotation 이 필요한지 확인 후 결과 데이터 구성
 ```python
+# Time Limit Exceeded 32/39 testcases passed
+
+class Solution:
+    def shiftingLetters(self, s: str, shifts: List[List[int]]) -> str:
+        accumulate_diff = [0] * len(s)
+        for start, end, d in shifts:
+            if d == 0:
+                d = -1
+            # (1)
+            for i in range(start, end + 1):
+                accumulate_diff[i] += d
+
+        #print(accumulate_diff)
+        res = []
+        alpha_cnt = ord('z') - ord('a') + 1
+
+        for i, c in enumerate(s):
+            r = ord(s[i]) + accumulate_diff[i] % alpha_cnt
+            if r > ord('z'):
+                r -= alpha_cnt
+            elif r < ord('a'):
+                r += alpha_cnt
+            res.append(chr(r))
+
+        #print(res)
+        return ''.join(res)
+
+
+# Runtime 60 ms Beats 58.51% /  Memory 41.31 MB Beats 64.81%
+
+class Solution:
+    def shiftingLetters(self, s: str, shifts: List[List[int]]) -> str:
+        accumulate_diff = [0] * len(s)
+        for start, end, d in shifts:
+            if d == 0:
+                d = -1
+            accumulate_diff[start] += d
+            if end + 1 < len(accumulate_diff):
+                accumulate_diff[end + 1] -= d
+
+        for i in range(1, len(accumulate_diff)):
+            accumulate_diff[i] += accumulate_diff[i - 1]
+        #print(accumulate_diff)
+
+        res = []
+        alpha_cnt = ord('z') - ord('a') + 1
+
+        for i, c in enumerate(s):
+            r = ord(s[i]) + accumulate_diff[i] % alpha_cnt
+            if r > ord('z'):
+                r -= alpha_cnt
+            elif r < ord('a'):
+                r += alpha_cnt
+            res.append(chr(r))
+
+        #print(res)
+        return ''.join(res)
 ```
 
 
