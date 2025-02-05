@@ -31,9 +31,11 @@ Multiply the 2 last elements in the second row by -1.
 
 
 Constraints:
+```
 n == matrix.length == matrix[i].length
 2 <= n <= 250
--10^5^ <= matrix[i][j] <= 10^5^
+-10^5 <= matrix[i][j] <= 10^5
+```
 ---
 
 # answer
