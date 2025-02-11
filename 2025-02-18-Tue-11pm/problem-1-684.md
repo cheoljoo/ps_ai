@@ -49,6 +49,9 @@ Constraints:
 
 ## charles
 - This is similar to grouping problem / find loop.
+- 기본 아이디어는 remove하여 cycle이 안 생기게 한다는 것은 , 하나씩 추가해서 cycle이 생길때의 edge를 찾으라는 것과 같은 것으로 ,
+- 각 edge를 추가할때마다 loop가 있는지 판별하는게 첫번째 방법이고,
+- loop를 찾을때 , parent값을 찾아가게 하면 root parent가 나오게 될 것이며 , edge의 양 노드의 root parent가 같으면 삼각형 모양을 이루게 되어 loop를 나타내게 되어 loop를 찾았다고 할수 있다.
 - helpful information : https://github.com/cheoljoo/problemSolving/blob/master/leetcode/README.md#218-grouping--find--union
 
 - recursive method (Runtime 15 ms Beats 10.08% / Memory 18.34 MB Beats 36.87%)
