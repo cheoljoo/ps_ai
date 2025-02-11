@@ -48,7 +48,122 @@ Constraints:
 
 
 ## charles
-- 
+- This is similar to grouping problem / find loop.
+- helpful information : https://github.com/cheoljoo/problemSolving/blob/master/leetcode/README.md#218-grouping--find--union
+
+- recursive method (Runtime 15 ms Beats 10.08% / Memory 18.34 MB Beats 36.87%)
 ```python
+class Solution:
+    def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+        self.graph = {}   # { node : set()}
+        for edge in edges:
+            a , b = edge
+            if self. find(a,b):
+                return edge
+            if a not in self.graph:
+                self.graph[a] = set()
+            self.graph[a].add(b)
+            if b not in self.graph:
+                self.graph[b] = set()
+            self.graph[b].add(a)
+        return []
+    def find(self,start,target):
+        if start not in self.graph:
+            return False
+        if target not in self.graph:
+            return False
+
+        visited = {start}
+        if self.go(visited,start,target):
+            return True
+        visited = {target}
+        if self.go(visited,target,start):
+            return True
+        return False
+    def go(self,visited,node,target):
+        # print('go',node,target,visited,self.graph)
+        for n in self.graph[node]:
+            # print(n,target)
+            if n == target:
+                return True
+            if n not in visited:
+                visited.add(n)
+                if self.go(visited,n,target):
+                    return True
+        return False
+```
+
+- queue (loop) (Runtime 15 ms Beats 10.08% / Memory 18.46 MB Beats 20.15%)
+```python
+class Solution:
+    def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+        self.graph = {}   # { node : set()}
+        for edge in edges:
+            a , b = edge
+            if self. find(a,b):
+                return edge
+            if a not in self.graph:
+                self.graph[a] = set()
+            self.graph[a].add(b)
+            if b not in self.graph:
+                self.graph[b] = set()
+            self.graph[b].add(a)
+        return []
+    def find(self,start,target):
+        if start not in self.graph:
+            return False
+        if target not in self.graph:
+            return False
+
+        if self.go(start,target):
+            return True
+        if self.go(target,start):
+            return True
+        return False
+    def go(self,node,target):
+        visited = {node}
+        q = [node]
+        while q:
+            # print('q',q,target,visited,self.graph)
+            node = q.pop()
+            if node == target:
+                return True
+            for n in self.graph[node]:
+                if n == target:
+                    return True
+                if n not in visited:
+                    visited.add(n)
+                    q.append(n)
+        return False
+```
+
+- grouping / union method (Runtime 3 ms Beats 54.19% / Memory 18.28 MB Beats 53.58%)
+```python
+class Solution:
+    def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+        # https://github.com/cheoljoo/problemSolving/blob/master/leetcode/README.md#218-grouping--find--union
+        N = 0
+        for a,b in edges:
+            N = max(N,a)
+            N = max(N,b)
+        # print(N)
+        p = list(range(N+1))  # parent
+        def find(x):
+            if x != p[x]:
+                p[x] = find(p[x])
+            return p[x]
+        def union(x, y):
+            px = find(x)
+            py = find(y)
+            if px != py:
+                p[py] = px
+                return False
+            else:
+                return True
+
+        for a,b in edges:
+            if union(a,b):
+                return [a,b]
+        return []
 ```
 
