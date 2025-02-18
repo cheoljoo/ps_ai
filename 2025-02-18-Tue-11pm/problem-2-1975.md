@@ -41,8 +41,29 @@ n == matrix.length == matrix[i].length
 # answer
 
 ## al
-- 
+- 행렬 전체에서 음수의 개수가 짝수개 이면, 주어진 연산을 통해 모든 요소를 양수로 만들 수 있음
+- 행렬 전체에서 음수의 개수가 홀수개 이면, 주어진 연산을 통해 하나의 요소만 음수로 만들 수 있음
+- 행렬의 모든 요소의 절대값 합을 구하고, 음수의 개수가 짝수개이면 그 값을 리턴,
+음수의 개수가 홀수개 이면 그 값에 절대값이 가장 작은 요소를 2번 빼주면 된다.
+- Runtime 91 ms Beats 58.39% / Memory 25.77 MB Beats 22.81%
 ```python
+class Solution:
+    def maxMatrixSum(self, matrix: List[List[int]]) -> int:
+        negative_cnt = 0
+        abs_sum = 0
+        abs_min = 100000
+
+        for row in matrix:
+            for e in row:
+                if e < 0:
+                    negative_cnt += 1
+                abs_sum += abs(e)
+                abs_min = min(abs_min, abs(e))
+
+        if negative_cnt % 2 == 0:
+            return abs_sum
+
+        return abs_sum - (2 * abs_min)
 ```
 
 
