@@ -36,8 +36,38 @@ Constraints:
 # answer
 
 ## al
-- 
+- union find 알고리즘 사용
+- 연결된 노드는 동일한 그룹
+- 동일한 그룹간에 연결이 추가될 경우 cycles 을 만든다. 
+
+- ref : https://gmlwjd9405.github.io/2018/08/31/algorithm-union-find.html
+
+- union find (Runtime 3 ms Beats 54.07% / Memory 18.24 MB Beats 54.19%)
 ```python
+class Solution:
+    def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+        def find(p, x):
+            if p[x] == x:
+                return x
+            p[x] = find(p, p[x])
+            return p[x]
+        def union(p, x, y):
+            px = find(p, x)
+            py = find(p,y)
+            p[py] = px
+
+        parent = [ i for i in range(len(edges) + 1) ]
+
+        for edge in edges:
+            x = edge[0]
+            y = edge[1]
+
+            if find(parent, x) == find(parent, y):
+                break
+
+            union(parent, x, y)
+
+        return edge
 ```
 
 
