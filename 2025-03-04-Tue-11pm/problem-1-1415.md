@@ -52,7 +52,7 @@ Constraints:
 
 ## charles
 - BFS로 찾아가면서 n level에서의 k 번째 값을 찾으면 된다.
-- Runtime 27 ms Beats 45.67% / Memory 18.08 MB Beats 34.67%
+- Runtime 27 ms Beats 45.67% / Memory 18.08 MB Beats 34.67% / Time 33 min
 ```python
 class Solution:
     def getHappyString(self, n: int, k: int) -> str:
