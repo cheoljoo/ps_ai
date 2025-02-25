@@ -51,6 +51,37 @@ Constraints:
 
 
 ## charles
-- 
+- BFS로 찾아가면서 n level에서의 k 번째 값을 찾으면 된다.
+- Runtime 27 ms Beats 45.67% / Memory 18.08 MB Beats 34.67%
 ```python
+class Solution:
+    def getHappyString(self, n: int, k: int) -> str:
+        # totalCountWithN = 3 * (2 ** (n-1))
+        self.k = k
+        self.n = n
+        self.ans = ""
+        ans = ""
+        # 3**10이 될수 있지만, recursive로 해도 100까지만 call을 하면 되므로 상관없다.
+        # 또 다른 방법은 각 level에서의 k 번째를 찾아야 하므로 
+        # 각 level마다로 가는 BFS를 찾는 것도 방법이다.
+        if k > 3 * (2**(n-1)):
+            return ""
+        q = ['a','b','c']
+        nq = []
+        while q:
+            # print(q)
+            for newString in q:
+                # print('new',newString)
+                if n == len(newString):
+                    k -= 1
+                    if k == 0:
+                        return newString
+                for ch in ['a','b','c']:
+                    if newString[-1] != ch:
+                        nq.append( newString + ch )
+            q = nq
+            nq = []
+            if n > 10:
+                return ""
+        return ""
 ```
