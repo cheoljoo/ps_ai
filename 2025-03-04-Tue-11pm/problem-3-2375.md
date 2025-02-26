@@ -42,8 +42,44 @@ pattern consists of only the letters 'I' and 'D'.
 # answer
 
 ## al
--
+- DFS 를 사용, 작은 값부터 사용하여 조건을 만족하는 값을 찾았다.
+- possible_n 배열에 1 ~ 9 값을 순서대로 저장 후 사용한 숫자는 0으로 초기화
+- 다음 숫자를 찾기 위해 pattern 의 값에 따라 값의 범위를 지정([start:end])하고, 작은 값 부터 선택 후, dfs() 호출하여 과정 반복
+- 조건을 만족하는 값이 없을 경우 사용했던 값을 복원 후 다음 값을 시도하는 방식
 ```python
+# Runtime 0ms Beats 100% / Memory 17.77 MB Beats 59.56% / Time approximately 1h
+class Solution:
+    def smallestNumber(self, pattern: str) -> str:
+        def dfs(pattern, possible_n, out, i):
+            if len(pattern) < len(out):
+                return True
+
+            start = 0
+            end = 9
+            if i > 0:
+                if pattern[i - 1] == 'I':
+                    start = int(out[-1])
+                else:
+                    end = int(out[-1]) - 1
+
+            for n in possible_n[start:end]:
+                if n == 0:
+                    continue
+                out.append(str(n))
+                possible_n[n - 1] = 0
+                if dfs(pattern, possible_n, out, i + 1):
+                    return True
+                out.pop()
+                possible_n[n - 1] = n
+
+            return False
+
+        possible_n = [ i + 1 for i in range(9) ]
+        out = []
+
+        dfs(pattern, possible_n, out, 0)
+
+        return ''.join(out)
 ```
 
 

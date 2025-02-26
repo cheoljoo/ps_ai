@@ -39,8 +39,40 @@ Constraints:
 # answer
 
 ## al
--
+- happy string 의 첫번째 문자로 올 수 있는 문자는 'a', 'b', 'c' 3개, 그 이후 문자는 바로 앞자리에서 사용되지 않은 문자 2개.
+- 길이가 n인 happy string 의 최대 개수는 3 * 2 ** (n - 1)개 이다.
+- 첫번째 문자는 3진수, 그 이후 문자는 2진수 표현으로 볼 수 있다.
+- 앞에서 결정된 문자에 따라 바로 뒷 문자의 표현이 제한된다. (char 딕셔너리 이용)
+- 인덱스로 접근하기 위해서 k - 1 을 사용했다.
+- 다음은 k 를 2진수와 3진수 혼합 표현으로 변경하는 과정이다.
+- n - 1 번 2로 나눈 나머지들을 각각 스택(remain)에 저장 후, 3으로 나눈 나머지 값으로 첫번째 문자를 결정한다.
+- 이전 문자(res[-1]) 를 key 로 char 딕셔너리에 접근하면 현재 사용할 수 있는 문자 2개의 배열에 접근할 수 있다.
+- remain 스택의 값을 pop 하면서 문자를 결정한다.
 ```python
+# Runtime 0ms Beats 100% / Memory 17.85 MB Beats 64.20% / Time approximately 1h
+class Solution:
+    def getHappyString(self, n: int, k: int) -> str:
+        happy_str_cnt = 3 * 2 ** (n - 1)
+        if happy_str_cnt < k:
+            return ""
+
+        res = []
+        remain = []
+        char = { "a" : ["b", "c"], "b" : ["a", "c"], "c" : ["a", "b"] }
+        base = ["a", "b", "c"]
+
+        tmp = k - 1
+        for _ in range(n - 1):
+            remain.append(tmp % 2)
+            tmp = tmp // 2
+
+        tmp = tmp % 3
+        res.append(base[tmp])
+
+        for _ in range(n - 1):
+            res.append(char[res[-1]][remain.pop()])
+
+        return ''.join(res)
 ```
 
 
