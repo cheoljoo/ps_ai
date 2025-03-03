@@ -66,6 +66,35 @@ class Solution:
 
 
 ## charles
-- 
+- Runtime 3975 ms Beats 12.62% / Memory 21.45 MB Beats 21.72%
 ```python
+class Solution:
+    def longestIdealString(self, s: str, k: int) -> int:
+        # N**2 으로 풀면 timeout 일 것이다.
+        # N으로 풀어야하는데 , windows는 중간에 빠질수 있어 고려가 안되고,
+        # 방법 2 : 각 문자가 몇개씩인지를 보고 , windows를 k size로 a ~  z까지 옮기면서 그 합이 제일 큰 것을 답으로 하면 될 듯 하다.  (이건 말이 안되는구나. 연속된 두 수 간의 diff 임)
+        # 방법 3 : 끝나는 alphabet을 기준으로 string을 저장한다. 끝나는 알파벳으로 끝나는 현재까지 가장 긴 string이 되는 것이다. 다음 새로운 글자가 올때 차이가 밖이라면 해당 문자의 가장 긴 것과 비교해서 삽입 , 차이 안에 들어올때는 기존 것은 놔두고 , 새로 추가되는 문제의 가장 긴 것보다 긴 것인지 check해서 삽입
+        stringWithLastChar = [''] * 26
+        stringWithLastChar[ord(s[0])-ord('a')] = s[0]
+        for ch in s[1:]:
+            longLengthStr = stringWithLastChar[ord(ch)-ord('a')]
+            for index in range(26): # stringWithLastChar
+                longStr = stringWithLastChar[index]
+                if len(longStr) == 0:
+                    if len(stringWithLastChar[ord(ch)-ord('a')]) == 0:
+                        # stringWithLastChar[ord(ch)-ord('a')] = ch
+                        if len(longLengthStr) == 0:
+                            longLengthStr = ch
+                else:
+                    diff = abs(ord(ch) - ord(longStr[-1]))
+                    if diff <= k:
+                        if len(longLengthStr) < len(longStr)+1:
+                            longLengthStr = longStr + ch
+            stringWithLastChar[ord(ch)-ord('a')] = longLengthStr
+            # print(ch,stringWithLastChar)
+        
+        mx = 0
+        for s in stringWithLastChar:
+            mx = max(len(s),mx)
+        return mx
 ```
