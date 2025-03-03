@@ -58,6 +58,12 @@ class Solution:
         return max(max_num)
 ```
 
+- 시도 1 : len 배열을 만들고 시작부터 현재 인덱스 값을 포함하는 최대 길이를 저장. 현재 인덱스 값에서 절대값 차가 k 이내인 값을 이전 배열에서 찾아 추가로 연결하는 방법
+- 결과 1 : Wrong Answer 44 / 85 testcases passed : 오답 이유 - 절대값 차가 k 이내인 값 중 최대값을 찾아야 함
+- 시도 2 : 절대값 차가 k 이내인 값 중 최대값을 찾도록 수정
+- 결과 2 : Time Limit Exceeded 72 / 85 testcases passed : 시간 복잡도 n^2 가 되고 n 의 최대값 10만 이므로 최대 100억번 연산
+- 시도 3 : heapq 를 사용해서 최대값 순서대로 찾고, 범위 내인지 확인하여 범위 내인 경우 사용
+- 결과 3 : Time Limit Exceeded 74 / 85 testcases passed : 평균 nlongn(??), 최악 n^2
 
 ## peter
 - 
