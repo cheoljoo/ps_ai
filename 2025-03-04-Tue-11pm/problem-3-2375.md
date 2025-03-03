@@ -90,6 +90,44 @@ class Solution:
 
 
 ## charles
-- 
-```python
-```
+- Runtime 0 ms Beats 100.00% / Memory 17.69 MB Beats 85.08%
+- ```python
+  class Solution:
+      def smallestNumber(self, pattern: str) -> str:
+          startNumber = 1
+          # startNumber는 제일 앞의 D의 갯수 + 1 개 입니다.
+          for ch in pattern:
+              if ch == 'I':
+                  break
+              else:
+                  startNumber += 1
+          isCatchD = False
+          dCount = 0
+          D = [0] * len(pattern)
+          for index,ch in enumerate(reversed(pattern)):
+              if ch == 'D':
+                  dCount += 1
+              else :
+                  D[len(pattern)-1-index] = dCount
+                  dCount = 0
+          # print('startNumber',startNumber)
+          # print('D',D)
+          
+          # D : 뒤에 얼마나 D가 있는지
+          # 'D'를 만나면 1개씩 죽이면 되고 , 
+          # 'I'를 만나면 전의 제일 큰 수에 D[] + 1 을 더한다.
+          if startNumber < 1:
+              startNumber = 1
+          ans = str(startNumber)
+          num = startNumber
+          mx = startNumber
+          for index,ch in enumerate(pattern):
+              if ch == 'D':
+                  num -= 1
+                  ans += str(num)
+              else:
+                  num = mx + D[index] + 1
+                  ans += str(num)
+                  mx = num
+          return ans
+  ```
