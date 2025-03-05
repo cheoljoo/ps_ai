@@ -24,6 +24,16 @@
 
 
 ## charles
-- 
+- Runtime 0 ms Beats 100.00% /  Memory 17.78 MB Beats 48.12%
 ```python
+class Solution:
+    def coloredCells(self, n: int) -> int:
+        # 1
+        # 1 + 4*1
+        # 1 + 4*1 + 4*2
+        # 1 + 4*1 + 4*2 + 4*3
+        if n == 1:
+            return 1
+        c = n-1
+        return 1+ (c*(c+1) // 2)*4
 ```
