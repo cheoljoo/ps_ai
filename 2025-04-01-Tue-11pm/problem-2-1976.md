@@ -36,8 +36,76 @@
 # answer
 
 ## al
-- 
+- graph 의 index는 출발지점, 값은 dict(key는 도착 지점, value는 걸리는 시간)
+- 가장 짧은 시간이 걸리는 경로의 개수를 찾는 문제로 모든 경로를 찾아야 할 것 같아 bfs(우선 순위 적용), dfs 로 시도했으나 둘 다 시간 초과 발생
 ```python
+# Time Limit Exceeded 17/56 testcases passed
+class Solution:
+    def countPaths(self, n: int, roads: List[List[int]]) -> int:
+        min_time = 10 ** 9 * 200 * 199 / 2 + 1
+        cnt = 0
+        graph = [ {} for _ in range(n) ]
+
+        for u, v, t in roads:
+            graph[u][v] = t
+            graph[v][u] = t
+
+        def dfs(node, time, passed):
+            nonlocal min_time
+            nonlocal cnt
+
+            if node == n - 1:
+                if min_time > time:
+                    min_time = time
+                    cnt = 1
+                elif min_time == time:
+                    cnt += 1
+                return
+
+            for v, t in graph[node].items():
+                if v in passed:
+                    continue
+                if time + t > min_time:
+                    continue
+                dfs(v, time + t, passed + [v])
+
+        dfs(0, 0, [0])
+        return cnt % (10 ** 9 + 7)
+
+# Time Limit Exceeded 15/56 testcase passed
+class Solution:
+    def countPaths(self, n: int, roads: List[List[int]]) -> int:
+        graph = [ {} for _ in range(n) ]
+        for u, v, t in roads:
+            graph[u][v] = t
+            graph[v][u] = t
+
+        # print(graph)
+        q = [(0, 0, [0])] # (time, node, passed)
+        min_time = 10 ** 9 * 200 * 199 / 2 + 1
+        cnt = 0
+
+        while q:
+            time, node, passed = heapq.heappop(q)
+            # print(f'node = {node}, time = {time}, passed = {passed}')
+            if node == n - 1:
+                if min_time > time:
+                    min_time = time
+                    cnt = 1
+                elif min_time == time:
+                    cnt += 1
+                continue
+
+            if time > min_time:
+                continue
+
+            for v, t in graph[node].items():
+                if v in passed:
+                    continue
+                heapq.heappush(q, (time + t, v, passed + [v]))
+            # print(f'q = {q}')
+
+        return cnt
 ```
 
 

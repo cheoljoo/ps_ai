@@ -30,8 +30,53 @@
 # answer
 
 ## al
-- 
+- 그래프를 그룹짓는 알고리즘으로 Union Find 를 사용
+- complete 를 판단하는 부분이 핵심이라고 생각함
+- 그룹을 이루는 정점의 개수가 n 일 때, n * (n - 1) / 2 개의 간선이 그룹사이에 존재할 때 complete 하다고 판단할 수 있다.
+- n개의 모든 정점이 연결되기 위해서 (n - 1) + (n - 2) + ... + 1 개의 간선이 필요하기 때문
 ```python
+# Runtime 91 ms Beats 18.58% / Memory 18.31MB Beats 55.65%
+
+class Solution:
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
+        def find(p, x):
+            if p[x] == x:
+                return x
+            p[x] = find(p, p[x])
+            return p[x]
+
+        def union(p, x, y):
+            px = find(p, x)
+            py = find(p, y)
+            p[max(px, py)] = min(px, py)
+
+        edge_cnt = [0] * n
+        # 자신을 부모로 갖도록 초기화
+        parent = [ i for i in range(n) ]
+        complete_cnt = 0
+
+        for x, y in edges:
+            px = find(parent, x)
+            py = find(parent, y)
+            if px != py:
+                # edges 는 연결을 의미하므로 부모가 다른 경우 같은 부모로 통합, edge_cnt 도 통합
+                union(parent, x, y)
+                edge_cnt[min(px, py)] += (edge_cnt[max(px, py)] + 1)
+                edge_cnt[max(px, py)] = 0
+            else:
+                edge_cnt[px] += 1
+
+        # for update
+        for i in range(n):
+            find(parent, i)
+
+        # print(parent)
+        # print(edge_cnt)
+        for k, c in Counter(parent).items():
+            if edge_cnt[k] == c * (c - 1) / 2:
+                complete_cnt += 1
+
+        return complete_cnt
 ```
 
 
