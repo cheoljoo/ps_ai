@@ -42,7 +42,32 @@ Total points earned: 2 + 5 = 7. There is no other way to earn 7 or more points.
 # answer
 
 ## al
+- m[i] : i번째 문제에서 시작 했을 경우 최대 점수를 저장한다.
+- 문제의 개수 n 개일 때 m[n - 1] 은 마지막 문제를 풀었을 때 획득할 수 있는 점수이다.(questions[n - 1][0])
+- 마지막 문제를 풀었을 때 획득할 수 있는 최고 점수가 고정되어 있으므로, 이를 기반으로 역순으로 확인하면서 풀이한다.
+- 문제를 대할 때 푸는 경우(solv), 풀지 않는 경우(skip)를 구분하여 계산한다.
+- 문제를 푸는 경우 최대 점수는 그 문제의 점수(questions[i][0]) + 다음으로 풀 수 있는 문제부터 시작했을 경우의 최대 점수 m[i + questions[i][1] + 1]
+- 문제를 풀지 않는 경우 최대 점수는 다음 문제의 최대 점수 m[i + 1]
+- i번째 문제에서 시작했을 때 최대 점수(m[i]) 는 i 번째 문제를 푸는 경우와 풀지 않는 경우 중 큰 값을 저장한다.
+- 0번째 문제에서 시작하는 경우의 최대 점수 (m[0])가 정답이 된다.
 ```python
+# Runtime 67 ms Beats 79.52% / Memory 60.84MB Beats 62.77%
+
+class Solution:
+    def mostPoints(self, questions: List[List[int]]) -> int:
+        n = len(questions)
+        m = [0] * n
+        m[n - 1] = questions[n - 1][0]
+
+        for i in range(n - 2, -1, -1):
+            solv = questions[i][0]
+            next_question = i + questions[i][1] + 1
+            if next_question < n:
+                solv += m[next_question]
+            skip = m[i + 1]
+            m[i] = max(solv, skip)
+
+        return m[0]
 ```
 
 
