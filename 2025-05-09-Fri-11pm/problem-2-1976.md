@@ -39,6 +39,52 @@
 - graph 의 index는 출발지점, 값은 dict(key는 도착 지점, value는 걸리는 시간)
 - 가장 짧은 시간이 걸리는 경로의 개수를 찾는 문제로 모든 경로를 찾아야 할 것 같아 bfs(우선 순위 적용), dfs 로 시도했으나 둘 다 시간 초과 발생
 ```python
+# Runtime 12 ms Beats 92.77% / Memory 24.21MB Beats 95.86%
+class Solution:
+    def countPaths(self, n: int, roads: List[List[int]]) -> int:
+        ways  = [ {} for _ in range(n) ]
+        graph = [ {} for _ in range(n) ]
+        min_time = [float('inf')] * n
+        min_time[0] = 0
+
+        for u, v, t in roads:
+            graph[u][v] = t
+            graph[v][u] = t
+
+        hq = [(0, 0)] # (time, node)
+        while hq:
+            time, node = heapq.heappop(hq)
+            if min_time[node] < time:
+                continue
+
+            for next_node, t in graph[node].items():
+                nt = time + t
+                if min_time[next_node] <= nt:
+                    continue
+
+                min_time[next_node] = nt
+                heapq.heappush(hq, (nt, next_node))
+
+        def countWays(node, time):
+            nonlocal ways
+            if node == 0 and time == 0:
+                return 1
+            cnt = 0
+            for prev_node, t in graph[node].items():
+                pt = time - t
+                if pt < min_time[prev_node]:
+                    continue
+                if pt in ways[prev_node]:
+                    cnt += ways[prev_node][pt]
+                else:
+                    ret = countWays(prev_node, pt)
+                    ways[prev_node][pt] = ret
+                    cnt += ret
+
+            return cnt
+
+        return countWays(n - 1, min_time[n - 1]) % (10 ** 9 + 7)
+
 # Time Limit Exceeded 17/56 testcases passed
 class Solution:
     def countPaths(self, n: int, roads: List[List[int]]) -> int:
