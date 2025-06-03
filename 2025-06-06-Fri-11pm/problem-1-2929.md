@@ -27,6 +27,36 @@ Constraints:
 
 ## al
 ```python
+# Runtime 4961 ms Beats 12.47%
+class Solution:
+    def distributeCandies(self, n: int, limit: int) -> int:
+        if 3 * limit < n:
+            return 0
+
+        cnt = 0
+        for a in range(limit + 1):
+            # (0 <= b <= limit) and (0 <= n - (a + b) <= limit)
+            # (0 <= b <= limit) and (n - limit - a <= b <= n - a)
+            m = max(0, n - limit - a)
+            M = min(limit, n - a)
+            if m <= M:
+                cnt += (M - m + 1)
+
+        return cnt
+
+# Time Limit Exceeded 500/958 testcases passed
+class Solution:
+    def distributeCandies(self, n: int, limit: int) -> int:
+        if 3 * limit < n:
+            return 0
+
+        cnt = 0
+        for a in range(limit + 1):
+            for b in range(limit + 1):
+                if 0 <= n - (a + b) <= limit:
+                    cnt += 1
+
+        return cnt
 ```
 
 
