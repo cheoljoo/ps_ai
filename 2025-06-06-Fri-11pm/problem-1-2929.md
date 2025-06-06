@@ -97,6 +97,7 @@ class Solution:
                 count = maxNum - minNum + 1
                 ans += count * 6
                 # print('ab',ab,'l',l,'ans',ans,'min',minNum, 'max',maxNum)
+                #  l 은 max값이 되는 것이고 , (l,?,?)의 max 값이고 , 뒤의 ?,? 가 a,b 가 되며 , a+b가 짝수이면 3,3으로 나올수 있기에 같은 갓이 나오므로 6이 아닌 3이 되는 것이고 , a+b >= l 인 경우는 l 의 값이 한번더 나올수 있기에 6이 아닌 3이 되므로 빼주는 것 입니다. 
                 if ab % 2 == 0:
                     ans -= 3
                 if ab >= l:
