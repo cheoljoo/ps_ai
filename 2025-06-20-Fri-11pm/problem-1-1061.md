@@ -59,5 +59,47 @@ s1, s2, and baseStr consist of lowercase English letters.
 
 
 ## charles
+- Runtime 3ms Beats 92.21% / Memory 17.86MB Beats 64.77%
 ```python
+class Solution:
+    def smallestEquivalentString(self, s1: str, s2: str, baseStr: str) -> str:
+        alphabetDict = {}
+        minMatched = [ chr(c) for c in range(ord('a'),ord('z')+1)]
+        for c in range(ord('a'),ord('z')+1):
+            alphabetDict[chr(c)] = set([chr(c)])
+        for i in range(len(s1)):
+            a = s1[i]
+            b = s2[i]
+            aIndex = ord(a)-ord('a')
+            bIndex = ord(b)-ord('a')
+            aMinMatched = minMatched[aIndex]
+            bMinMatched = minMatched[bIndex]
+            # print(a,b,aIndex,bIndex,'minMatched',aMinMatched,bMinMatched)
+            if aMinMatched == bMinMatched:
+                continue
+            elif aMinMatched > bMinMatched:
+                minIndex = ord(aMinMatched)-ord('a')
+                minMatched[minIndex] = bMinMatched  # a 자리에 b를 넣는다. 이후 alphabetDict에도 a 자리 안에 있는 것들을 모두 가서 b로 바꿔준다. 그리고, a는 set() 으로 바꾼다(clear). 
+                for ac in alphabetDict[aMinMatched]:
+                    alphabetDict[bMinMatched].add(ac)
+                    minMatched[ord(ac)-ord('a')] = bMinMatched
+                alphabetDict[aMinMatched] = set()
+            else:
+                minIndex = ord(bMinMatched)-ord('a')
+                minMatched[minIndex] = aMinMatched  # a 자리에 b를 넣는다. 이후 alphabetDict에도 b 자리 안에 있는 것들을 모두 가서 a로 바꿔준다. 그리고, b는 set() 으로 바꾼다(clear). 
+                for ac in alphabetDict[bMinMatched]:
+                    alphabetDict[aMinMatched].add(ac)
+                    minMatched[ord(ac)-ord('a')] = aMinMatched
+                alphabetDict[bMinMatched] = set()
+            # self.printA(a,b,alphabetDict,minMatched)
+        ans = ''
+        for bc in baseStr:
+            ans += minMatched[ord(bc) - ord('a')]
+        return ans
+    def printA(self,a,b,alphabetDict,minMatched):
+        pp = {}
+        for c in alphabetDict:
+            if len(alphabetDict[c]) != 1:
+                pp[c] = alphabetDict[c]
+        print(a,b,pp,minMatched)
 ```
