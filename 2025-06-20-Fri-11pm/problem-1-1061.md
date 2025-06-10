@@ -49,6 +49,35 @@ s1, s2, and baseStr consist of lowercase English letters.
 
 ## al
 ```python
+# Runtime 7ms Beats 49.58% / Memory 17.72MB Beats 87.47%
+class Solution:
+    def smallestEquivalentString(self, s1: str, s2: str, baseStr: str) -> str:
+        def find(a):
+            code = ord(a) - ord('a')
+            while parent[code] != code:
+                code = parent[code]
+
+            return parent[code]
+
+        def union(a, b):
+            pa = find(a)
+            pb = find(b)
+
+            if pa < pb:
+                parent[pb] = pa
+            else:
+                parent[pa] = pb
+
+        parent = [i for i in range(26)]
+
+        for i in range(len(s1)):
+            union(s1[i], s2[i])
+        
+        ans = []
+        for c in baseStr:
+            ans.append(chr(find(c) + ord('a')))
+
+        return ''.join(ans)
 ```
 
 
