@@ -32,7 +32,68 @@ Constraints:
 # answer
 
 ## al
+- 저는 문제를 잘못 이해한 듯합니다.
+- 예제 1번의 설명에서 차이가 최소가 되는 p개의 쌍 중에서 최대값을 찾았음
+- 그래서 차이값이 최소가 되는 쌍을 순서대로 p개 고르면 p번째 차이값이 최대가 되므로 그렇게 문제를 접근했는데 테스트 케이스 후반부에 더 작은 값이 정답이네요??
 ```python
+# Wrong Answer 1343 / 1582 testcases passed
+# nums = [1,1,0,3], p = 2
+# Expected : 2
+# But Output : 3
+'''
+nums = [0, 1, 1, 3]
+diff = [1, 0, 2, 1000000001]
+min_idx = 1
+next pair(i) = 2
+clear!!
+nums = [0, -1, -1, 3]
+diff = [1, 1000000001, 1000000001, 1000000001]
+next pair(j) = 3
+update diff!!!
+diff = [3, 1000000001, 1000000001, 1000000001]
+'''
+class Solution:
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        if p == 0:
+            return 0
+
+        nums.sort()
+        diff = [ nums[i + 1] - nums[i] for i in range(len(nums) - 1) ]
+        diff.append(10 ** 9 + 1)
+
+        for cnt in range(p):
+            min_idx = diff.index(min(diff))
+            if cnt == p - 1:
+                break
+
+            # find pair
+            for i in range(min_idx + 1, len(nums)):
+                if nums[i] >= 0:
+                    break
+
+            # clear pair value
+            nums[min_idx] = nums[i] = -1
+            diff[min_idx] = diff[i] = 10 ** 9 + 1
+
+            # find next value
+            j = i + 1
+            for j in range(i + 1, len(nums)):
+                if nums[j] >= 0:
+                    break
+
+            if min_idx > 0:
+                # find prev value
+                for k in range(min_idx - 1, -1, -1):
+                    if nums[k] >= 0:
+                        break
+                # update diff
+                if j < len(nums) and nums[j] >= 0:
+                    diff[k] = nums[j] - nums[k]
+                else:
+                    # clear
+                    diff[k] = 10 ** 9 + 1
+
+        return diff[min_idx]
 ```
 
 
