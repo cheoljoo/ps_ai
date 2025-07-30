@@ -40,8 +40,59 @@ Constraints:
 - subarray 에 포함되어 있지 않는 값이면 sub_arr에 값 추가, score 에 값 추가, max_score 확인
 - subarray 에 포함된 값이면 기존 값의 위치 다음으로 시작 위치 조정, score 값 조정, 삭제된 sub_arr 값 조정을 진행
 ```python
-# Runtime 255ms Beats 25.99% / Memory 29.84MB Beats 5.81%
+# Runtime 170ms Beats 90.52% / Memory 28.85MB Beats 53.88%
+# 딕셔너리에 인덱스를 저장하는 방법 대신 집합 자료형으로 변경, 값에 대한 인덱스는 저장하지 않고 시작 인덱스에서 추가할 값과 같을 때까지 찾는 방식 사용
+class Solution:
+    def maximumUniqueSubarray(self, nums: List[int]) -> int:
+        max_score = nums[0]
+        score = nums[0] # sum of subarray
+        start = 0 # index
+        sub_set = set([nums[0]])
 
+        for end in range(1, len(nums)):
+            val = nums[end]
+            score += val
+
+            if val not in sub_set:
+                max_score = max(max_score, score)
+            else:
+                while True:
+                    sub_set.remove(nums[start])
+                    score -= nums[start]
+                    start += 1
+                    if nums[start - 1] == val:
+                        break
+
+            sub_set.add(val)
+
+        return max_scor
+
+# Runtime 203ms Beats 49.63% / Memory 28.99MB Beats 27.37%
+# 코드 정리, 구간합 psum 제거, sub_arr_idx 관리를 위해 반복문을 사용하므로 여기에서 반복 제거하도록 처리
+class Solution:
+    def maximumUniqueSubarray(self, nums: List[int]) -> int:
+        max_score = nums[0]
+        score = nums[0] # sum of subarray
+        start = 0 # index
+        sub_arr_idx = {nums[0]: 0} # sub_arr_idx[value] = index
+
+        for end in range(1, len(nums)):
+            val = nums[end]
+            if val not in sub_arr_idx.keys():
+                score += val
+                max_score = max(max_score, score)
+            else:
+                new_start = sub_arr_idx[val] + 1 # next index
+                for i in range(start, new_start):
+                    del sub_arr_idx[nums[i]]
+                    score -= nums[i]
+                start = new_start
+                score += val
+            sub_arr_idx[val] = end # index update
+
+        return max_score
+
+# Runtime 255ms Beats 25.99% / Memory 29.84MB Beats 5.81%
 class Solution:
     def maximumUniqueSubarray(self, nums: List[int]) -> int:
         max_score = nums[0]
