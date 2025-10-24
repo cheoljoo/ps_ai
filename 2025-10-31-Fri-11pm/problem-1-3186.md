@@ -50,6 +50,33 @@ Constraints:
 
 
 ## charles
-- 
+- Runtime 563 ms Beats 49.44%
+- NlogN
 ```python
+# 1,2,3,4,5,6,7,8  이 여러개가 있다고하면  [숫자,횟수] 를 숫자로 sort하여 가지고 있으면 된다.
+# N 이 있으면 N의 값을 포함할때 => N*횟수 , N+3의최대값
+# N을 포함하지 않을때 => N+1의 최대값 (바로 전까지의 최대값)
+# N+3의 최대값 => bisect.bisect_right(sortedPower, num+2) 의 index가 들어갈 위치에 있는 것이 num+3 의 값이 됨.
+class Solution:
+    def maximumTotalDamage(self, power: List[int]) -> int:
+        powerCounter = Counter(power)
+        reverseSortedPower = sorted(powerCounter,reverse=True)
+        sortedPower = list(reversed(reverseSortedPower))
+        # print(sortedPower)
+        # print(reverseSortedPower)
+        dpMax = {}
+        prevMax = 0
+        for num in reverseSortedPower:
+            count = powerCounter[num]
+            # print(bisect.bisect_right(sortedPower, num+2), num*count , dpMax.get(num+3,prevMax) , dpMax.get(num+2,prevMax) , dpMax.get(num+1,prevMax))
+            index = bisect.bisect_right(sortedPower, num+2)
+            if index >= len(sortedPower):
+                whenSelected = 0
+            else:
+                whenSelected = dpMax[sortedPower[index]]
+            dpMax[num] = max(num*count + whenSelected , prevMax)
+            prevMax = dpMax[num]
+            # print('dpMax',dpMax)
+        return prevMax
+
 ```
