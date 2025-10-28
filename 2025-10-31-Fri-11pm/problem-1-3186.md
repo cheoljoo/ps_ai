@@ -38,8 +38,60 @@ Constraints:
 # answer
 
 ## al
--
+- 중복을 제거한 dmg 배열 dmg_list를 오름차순 정렬
+- power를 Counter 로 변환하여 dmg_list[i] 값의 개수는 cnt[dmg_list[i]] 로 사용
+- i번째 index까지 고려했을 때 총 데미지의 최대값을 m[i] 로 정의
+
+- 1) i번째 값을 사용하지 않으면, m[i] = m[i-1]
+- 2) i번째 값을 사용하고, m[i-1]에서 사용한 단일 최대 dmg < dmg_list[i] - 2 이면, m[i] = m[i-1] + (dmg_list[i] * cnt[i])
+- 3) i번째 값을 사용하고, m[i-1]에서 사용한 단일 최대 dmg >= dmg_list[i] - 2 이면, dmg_list[k] < dmg_list[i] - 2 인 인덱스 k를 찾고 m[i] = m[k] + (dmg_list[i] * cnt[i])
+
+- m[i] 를 계산할 때
+조건(m[i-1] 에서 사용한 단일 dmg의 최대값 < dmg_list[i] - 2) 을 만족하지 못하면, 1)과 3) 중 큰 값을 m[i] 로 사용
+조건을 만족하면 m[i-1] 에서 현재 dmg 총합을 추가
+
+- m[i] 를 계산하기 위해서 이전에 사용한 최대 단일 dmg를 저장하여 비교할 필요가 있음
+- max_single_dmg[i]를 m[i] 계산에 사용한 최대 단일 dmg 로 정의
+
 ```python
+# Runtime 336ms Beats 97.29%
+
+class Solution:
+    def maximumTotalDamage(self, power: List[int]) -> int:
+        power.sort()
+        cnt = Counter(power)
+
+        # 중복을 제거하고 오름차순으로 정렬된 상태의 dmg_list
+        dmg_list = list(cnt.keys())
+        # i번째 index까지 고려했을 때 총 데미지의 최대값을 m[i] 로 정의
+        m = [0] * len(dmg_list)
+        # 조건(m[i-1] 에서 사용한 단일 dmg의 최대값 < dmg_list[i] - 2)을 비교할 때 사용
+        # m[i] 계산에 사용한 최대 단일 dmg 를 max_single_dmg[i] 로 정의
+        max_single_dmg = [0] * len(dmg_list)
+
+        m[0] = dmg_list[0] * cnt[dmg_list[0]]
+        max_single_dmg[0] = dmg_list[0]
+
+        for i in range(1, len(dmg_list)):
+            if max_single_dmg[i-1] < dmg_list[i] - 2:
+                m[i] = m[i-1] + (dmg_list[i] * cnt[dmg_list[i]])
+                max_single_dmg[i] = dmg_list[i]
+            else:
+                last_max = 0
+                if 2 <= i and dmg_list[i-2] < dmg_list[i] - 2:
+                    last_max = m[i-2]
+                elif 3 <= i and dmg_list[i-3] < dmg_list[i] - 2:
+                    last_max = m[i-3]
+
+                new_max = last_max + (dmg_list[i] * cnt[dmg_list[i]])
+                if m[i-1] < new_max:
+                    m[i] = new_max
+                    max_single_dmg[i] = dmg_list[i]
+                else:
+                    m[i] = m[i-1]
+                    max_single_dmg[i] = max_single_dmg[i-1]
+
+        return m[-1]
 ```
 
 
@@ -80,3 +132,4 @@ class Solution:
         return prevMax
 
 ```
+
