@@ -96,18 +96,20 @@ class Solution:
 
 
 ## peter
-- For each value a in the sorted array power:
-
-- If a−1 or a−2 do not exist, take a and move to the next.
-
-- Otherwise, choose between two paths:
--	1️. Take a, exclude its related values (a−1, a−2), then continue with the next allowed value.
--	2️. Skip a and move on.
--	Take the path that gives the maximum total sum.
-
-
 ----
+```
+For each value a in the sorted array power:
 
+If a−1 or a−2 do not exist, take a and move to the next.
+
+Otherwise, choose between two paths:
+	1️. Take a, exclude its related values (a−1, a−2), then continue with the next allowed value.
+	2️. Skip a and move on.
+	Take the path that gives the maximum total sum.
+
+```
+----
+```
 task: find maximum summation value from sorted array "power"
 
 start
@@ -142,7 +144,7 @@ end loop
 return maximum recorded sum
 end
 
-
+```
 
 ----
 
@@ -227,6 +229,7 @@ class Solution:
         return prevMax
 
 ```
+
 
 
 
