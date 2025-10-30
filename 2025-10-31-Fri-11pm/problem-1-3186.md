@@ -96,15 +96,14 @@ class Solution:
 
 
 ## peter
-- 
-For each value a in the sorted array power:
+- For each value a in the sorted array power:
 
-If a−1 or a−2 do not exist, take a and move to the next.
+- If a−1 or a−2 do not exist, take a and move to the next.
 
-Otherwise, choose between two paths:
-	1️. Take a, exclude its related values (a−1, a−2), then continue with the next allowed value.
-	2️. Skip a and move on.
-	Take the path that gives the maximum total sum.
+- Otherwise, choose between two paths:
+-	1️. Take a, exclude its related values (a−1, a−2), then continue with the next allowed value.
+-	2️. Skip a and move on.
+-	Take the path that gives the maximum total sum.
 
 
 ----
@@ -149,6 +148,51 @@ end
 
 
 ```python
+
+class Solution:
+    def maximumTotalDamage(self, power) -> int:
+	
+        power.sort(reverse = True)
+        # 1) Gather by value: value_gain[v] = v * count(v)
+        values = []
+        gain = []
+        i = 0
+        n = len(power)
+        while i < n:
+            current = power[i]
+            cnt = 1
+            i += 1
+            while i < n and power[i] == current:
+                cnt += 1
+                i += 1
+            values.append(current)
+            gain.append(current * cnt)
+    
+        m = len(values)
+        if m == 0:
+            return 0
+    
+        # 2) For each i, find last index p[i] that is NOT "related" to values[i]
+        #    related means exactly (a-1) or (a-2), so safe <= (a-3)
+        p = [-1] * m
+        for i in range(m):
+            # find largest j < i with values[j] <= values[i] - 3
+            threshold = values[i] - 3
+            # bisect_right returns insertion point; subtract 1 to get last <= threshold
+            j = bisect_right(values, threshold, 0, i) - 1
+            p[i] = j if j >= 0 else -1
+    
+        # 3) DP over distinct values (choose / not choose)
+        dp = [0] * m
+        for i in range(m):
+            # choose current → exclude related (a-1, a-2) → goto p[i]
+            take_current = gain[i] + (dp[p[i]] if p[i] != -1 else 0)
+            # not choose current → goto i-1
+            not_choose = dp[i - 1] if i - 1 >= 0 else 0
+            # task: keep max
+            dp[i] = max(take_current, not_choose)
+    
+        return dp[-1]
 ```
 
 
@@ -183,5 +227,6 @@ class Solution:
         return prevMax
 
 ```
+
 
 
