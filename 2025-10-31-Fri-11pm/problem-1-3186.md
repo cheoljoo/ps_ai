@@ -97,6 +97,57 @@ class Solution:
 
 ## peter
 - 
+For each value a in the sorted array power:
+
+If a−1 or a−2 do not exist, take a and move to the next.
+
+Otherwise, choose between two paths:
+	1️. Take a, exclude its related values (a−1, a−2), then continue with the next allowed value.
+	2️. Skip a and move on.
+	Take the path that gives the maximum total sum.
+
+
+----
+
+task: find maximum summation value from sorted array "power"
+
+start
+    set current_idx = 0
+    set max_sum = 0
+    prepare memo or record for each step
+
+loop while current_idx < len(power)
+    current_value = power[current_idx]
+
+    # check if related (a-1, a-2) values exist in array
+    related_exist = check(power, current_value - 1) or check(power, current_value - 2)
+
+    if NOT related_exist:
+        take current_value into sum
+        goto next one
+    else:
+        # two possible branches
+        branch_1: choose current_value
+            → exclude any (a-1, a-2) values
+            → goto next allowed index
+            → compute sum_1
+        branch_2: skip current_value
+            → goto next index
+            → compute sum_2
+
+        choose max(sum_1, sum_2)
+        store as best for this position
+    end if
+end loop
+
+return maximum recorded sum
+end
+
+
+
+----
+
+
 ```python
 ```
 
@@ -132,4 +183,5 @@ class Solution:
         return prevMax
 
 ```
+
 
