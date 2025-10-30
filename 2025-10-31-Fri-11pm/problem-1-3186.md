@@ -98,7 +98,8 @@ class Solution:
 ## peter
 ----
 ```
-For each value a in the sorted array power:
+power[ ]  is  sorted number array
+a = power[ current ] 
 
 If a−1 or a−2 do not exist, take a and move to the next.
 
@@ -229,6 +230,7 @@ class Solution:
         return prevMax
 
 ```
+
 
 
 
