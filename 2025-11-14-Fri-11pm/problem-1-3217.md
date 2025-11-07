@@ -60,6 +60,33 @@ The input is generated such that there is at least one node in the linked list t
 
 
 ## charles
--
+- data있는지 확인하기 위한 것에서 nums의 list에서 찾으면 timeout
+- dictionary로 변경하고 찾으니 760 ms
+- set으로 변경하고 찾으니 63 ms
 ```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def modifiedList(self, nums: List[int], head: Optional[ListNode]) -> Optional[ListNode]:
+        d = set(nums)
+        while head:
+            if head.val in d:
+                head = head.next
+            else:
+                break
+        node = head.next
+        prev = head
+        while node:
+            if node.val in d:
+                prev.next = node.next
+                node = node.next
+            else:
+                prev = node
+                node = node.next
+                
+        return head
 ```
+
