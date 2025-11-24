@@ -56,6 +56,23 @@ endTime[i] <= startTime[i + 1] where i lies in the range [0, n - 2].
 ## al
 -
 ```python
+# Runtime 44ms Beats 76.28%
+class Solution:
+    def maxFreeTime(self, eventTime: int, k: int, startTime: List[int], endTime: List[int]) -> int:
+        # 미팅 사이의 free time 계산, 최종 len(free_time) == n + 1
+        n = len(startTime)
+        free_time = [ startTime[i] - (endTime[i-1] if i != 0 else 0) for i in range(n) ]
+        free_time.append(eventTime - endTime[n-1])
+
+        max_free_time = 0
+        # k 개의 미팅 시간을 조정할 수 있으므로, 연속된 k + 1 개의 최대값을 구하면 됨
+        s = sum(free_time[0:k+1])
+        for i in range(n - k + 1):
+            max_free_time = max(max_free_time, s)
+            if i < n - k:
+                s = s - free_time[i] + free_time[i+k+1]
+
+        return max_free_time
 ```
 
 
