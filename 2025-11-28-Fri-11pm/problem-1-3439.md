@@ -83,7 +83,64 @@ class Solution:
 
 
 ## charles
--
+- Window를 조정한다.   Runtime 91 ms Beats 20.48%
 ```python
+class Solution:
+    def maxFreeTime(self, eventTime: int, k: int, startTime: List[int], endTime: List[int]) -> int:
+        start = 0
+        emptyTime = []
+        emptyLeftBlock = []
+        block = 0
+        for i in range(len(startTime)+1):
+            if i == 0:
+                if 0 < startTime[0]:
+                    emptyTime.append(startTime[0])
+                    emptyLeftBlock.append(0)
+                block = 1
+                continue
+            if i == len(startTime):
+                if endTime[i-1] < eventTime:
+                    emptyTime.append(eventTime-endTime[i-1])
+                    emptyLeftBlock.append(block)
+                continue
+            if endTime[i-1] < startTime[i]:
+                emptyTime.append(startTime[i]-endTime[i-1])
+                emptyLeftBlock.append(block)
+                block = 1
+                continue
+            block += 1
+        if not emptyTime:
+            return 0
+        # print(emptyTime,emptyLeftBlock)
+        mx = emptyTime[0]
+        start = 0
+        end = 0
+        block = 0
+        for i in range(1,len(emptyTime)):
+            if block + emptyLeftBlock[i] <= k:
+                end = i
+                block += emptyLeftBlock[i]
+                mx += emptyTime[i]
+            else:
+                break
+        result = mx
+        # print('start index',start,'end index',end , 'block',block,'mx',mx)
+        while start < len(emptyTime):
+            # print('1start index',start,'end index',end , 'block',block,'mx',mx,'result',result)
+            # 이 시점은 end까지는 포함된 것이다. 
+            if end+1 < len(emptyTime) and block + emptyLeftBlock[end+1] <= k:
+                end += 1
+                block += emptyLeftBlock[end]
+                mx += emptyTime[end]
+                result = max(mx,result)
+            else:  # end는 더이상 뒤로 갈수 없는 상황 , start를 조절
+                if start+1 >= len(emptyTime):
+                    break
+                block -= emptyLeftBlock[start+1]
+                mx -= emptyTime[start]
+                start += 1
+            # print('2start index',start,'end index',end , 'block',block,'mx',mx,'result',result)
+        return result
 ```
+
 
