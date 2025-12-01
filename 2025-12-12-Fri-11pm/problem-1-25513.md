@@ -77,8 +77,62 @@ r, c = map(int, input().split())
 # answer
 
 ## al
--
+- 규칙
+- board 에 -1 ~ 6 의 정수값이 존재
+- 1 ~ 6은 하나씩만 존재
+- 시작 위치는 r, c
+- 1 ~ 6을 순서대로 방문할 때 최소 이동 횟수를 구하는 문제
+- 불가능한 경우 -1을 리턴
+- board 값 -1 은 이동 불가
+- 재방문 가능
+
+- 풀이
+- BSF 를 단계별로 진행 (1 ~ 6)
+- 우선순위 큐 사용 key 는 이동 거리
+- 재탐색을 하지 않기 위해 visited 배열을 사용하여 이동한 위치를 체크, 재방문 가능하므로 단계별로 클리어
 ```python
+# 메모리 35508KB 시간 36ms
+import heapq
+import sys
+input = sys.stdin.readline
+
+board = [list(map(int, input().split())) for _ in range(5)]
+r, c = map(int, input().split())
+
+def bfs(start_r, start_c, target):
+    hq = [(0, (start_r, start_c))]
+    d = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    visited = [[False] * 5 for _ in range(5)]
+    visited[start_r][start_c] = True
+
+    while hq:
+        p = heapq.heappop(hq)
+        r = p[1][0]
+        c = p[1][1]
+        step = p[0]
+        if board[r][c] == target:
+            return step, (r, c)
+
+        for dr, dc in d:
+            nr = r + dr
+            nc = c + dc
+            if 0 <= nr < 5 and 0 <= nc < 5 and board[nr][nc] != -1 and visited[nr][nc] == False:
+                visited[nr][nc] = True
+                heapq.heappush(hq, (step + 1, (nr, nc)))
+
+    return -1, (-1, -1)
+
+pos = (r, c)
+cnt = 0
+for i in range(1, 7):
+    step, pos = bfs(pos[0], pos[1], i)
+    if step == -1:
+        cnt = -1
+        break
+    cnt += step
+
+print(cnt)
 ```
 
 
